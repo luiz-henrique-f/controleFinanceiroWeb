@@ -1,9 +1,9 @@
 import { Label } from "../../components/ui/label";
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 
-export function RadioGroupItems({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+export function RadioGroupItems({ value, onChange, defaultValue }: { value: string; onChange: (value: string) => void; defaultValue: string}) {
   return (
-    <RadioGroup value={value} onValueChange={onChange} className="flex space-x-2">
+    <RadioGroup value={value} onValueChange={onChange} defaultValue={defaultValue} className="flex space-x-2">
       <div className="flex items-center space-x-2">
         <RadioGroupItem value="E" id="r1" />
         <Label htmlFor="r1">Entrada</Label>

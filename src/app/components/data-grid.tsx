@@ -1,3 +1,4 @@
+import { Badge } from "../../components/ui/badge";
 import {
   Table,
   TableBody,
@@ -6,75 +7,55 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/table";
+import { useFinancialData } from "../../hooks/useFinancialData";
 
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
+interface DataGridProps {
+  date: string;
+}
 
-export function DataGrid() {
+export function DataGrid({ date }: DataGridProps) {
+  const { data } = useFinancialData(date);
+
+  // console.log(data);
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  };
+
   return (
     <div className="w-[100%] flex justify-center items-center mx-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Descrição</TableHead>
-            <TableHead>Valor</TableHead>
-            <TableHead>Tipo</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead>Descrição</TableHead>
+            <TableHead className="w-[200px] text-center">Valor</TableHead>
+            <TableHead className="w-[100px] text-center">Tipo</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice}>
-              <TableCell className="font-medium">{invoice.invoice}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
-              <TableCell className="text-right">
-                {invoice.totalAmount}
-              </TableCell>
-            </TableRow>
-          ))}
+          {Array.isArray(data) &&
+            data.map((data: any) => (
+              <TableRow key={data.id}>
+                <TableCell className="font-medium">
+                  {data.description}
+                </TableCell>
+                <TableCell className="text-center">
+                  {formatCurrency(data.value)}
+                </TableCell>
+                <TableCell className="text-center">
+                  {data.typeMoviment == "E" ? (
+                    <Badge variant={"theme"}>Entrada</Badge>
+                  ) : (
+                    <Badge variant={"destructive"}>Saída</Badge>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>
