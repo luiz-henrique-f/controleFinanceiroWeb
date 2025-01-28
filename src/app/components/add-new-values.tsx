@@ -7,26 +7,45 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 
 import { toast } from "sonner";
+import { postFinancialData } from "../../hooks/postFinancialData";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { PostFinancialRequest } from "../../interfaces/post-financial-data";
 
 interface AddNewValueProps {
   date: string;
 }
 
 const valuesSchema = z.object({
-  description: z.string(),
+  typeMoviment: z.string().default("E"),
   value: z.coerce.number(),
-  type: z.string().default("E"),
-  date: z.string(),
+  description: z.string(),
+  monthYear: z.string(),
 });
 
 type ValuesSchema = z.infer<typeof valuesSchema>;
 
 function AddNewValue({ date }: AddNewValueProps) {
-  const { register, handleSubmit, setValue, watch } = useForm<ValuesSchema>({
-    resolver: zodResolver(valuesSchema),
-  });
+  const { register, handleSubmit, setValue, watch, reset } =
+    useForm<ValuesSchema>({
+      resolver: zodResolver(valuesSchema),
+    });
 
-  const type = watch("type");
+  const typeMoviment = watch("typeMoviment");
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation<any, Error, PostFinancialRequest>({
+    mutationFn: postFinancialData,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["list-financial"] });
+      toast.success("Dado financeiro adicionado com sucesso!");
+
+      reset();
+    },
+    onError: (error) => {
+      toast.error("Erro ao adicionar dado financeiro: " + error.message);
+    },
+  });
 
   function handleCreateControl(data: ValuesSchema) {
     if (!data.description) {
@@ -37,11 +56,12 @@ function AddNewValue({ date }: AddNewValueProps) {
       toast.error("Informe o valor");
       return;
     }
-    console.log(data);
+
+    mutation.mutate(data);
   }
 
   useEffect(() => {
-    setValue("date", date);
+    setValue("monthYear", date);
   }, [date, setValue]);
 
   return (
@@ -57,11 +77,11 @@ function AddNewValue({ date }: AddNewValueProps) {
         type="text"
         value={date}
         placeholder="date"
-        {...register("date")}
+        {...register("monthYear")}
       />
       <RadioGroupItems
-        value={type == '' ? 'E' : type}
-        onChange={(value) => setValue("type", value)}
+        value={typeMoviment == "" ? "E" : typeMoviment}
+        onChange={(value) => setValue("typeMoviment", value)}
         defaultValue="E"
       />
       <Button className="bg-teal-800" type="submit">
