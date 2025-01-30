@@ -19,6 +19,7 @@ import {
 } from "@tanstack/react-table";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { Button } from "../../components/ui/button";
+import { AlertDialogDelete } from "./alert-dialog-delete";
 
 interface DataGridProps {
   date: string;
@@ -51,6 +52,16 @@ export function DataGrid({ date }: DataGridProps) {
 
   // Definir as colunas da tabela
   const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "link-delete",
+      header: "",
+      meta: { className: "text-center w-[60px]" } as CustomColumnMeta, // Alinha esta coluna ao centro
+      cell: ({ row }) => (
+        <div className="text-center">
+          <AlertDialogDelete id={row.original.id} />
+        </div>
+      ),
+    },
     {
       accessorKey: "description",
       header: "Descrição",

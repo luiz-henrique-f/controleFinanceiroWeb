@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import AddNewValue from "./app/components/add-new-values";
-import CardControl from "./app/components/card-control";
 import { DataGrid } from "./app/components/data-grid";
 import Header from "./app/components/header";
 import { useQueryClient } from "@tanstack/react-query";
+import CardsBalance from "./app/components/cards-balance";
 
 function App() {
   const [date, setDate] = useState(() => {
@@ -40,6 +40,7 @@ function App() {
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ["list-financial"] });
+    queryClient.invalidateQueries({ queryKey: ["list-balance-financial"] });
   }, [date]);
 
   const formattedDate = `${String(date.month).padStart(2, "0")}/${date.year}`;
@@ -47,11 +48,8 @@ function App() {
   return (
     <div className="">
       <Header formattedDate={formattedDate} onMonthChange={handleMonthChange} />
-      <div className="max-w-[1120px] w-[98%] mx-auto flex gap-5 mt-[-50px] justify-around">
-        <CardControl title="Entrada" value={0} />
-        <CardControl title="Saída" value={0} />
-        <CardControl title="Total" value={0} />
-      </div>
+
+      <CardsBalance date={formattedDate} />
 
       <div className="flex p-2 w-[98%] bg-white max-w-[1120px] mx-auto mt-2 rounded-lg">
         <AddNewValue date={formattedDate} />

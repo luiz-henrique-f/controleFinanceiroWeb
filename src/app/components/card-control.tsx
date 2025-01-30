@@ -12,6 +12,13 @@ interface CardControlProps {
 }
 
 function CardControl({ title, value }: CardControlProps) {
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  };
+
   return (
     <div className="w-[40%] z-10 ">
       <Card className="">
@@ -25,7 +32,21 @@ function CardControl({ title, value }: CardControlProps) {
         </CardHeader>
 
         <CardContent>
-          <p className="text-base sm:text-lg font-bold">R$ {value}</p>
+          {title == "Total" ? (
+            Number(value) < 0 ? (
+              <p className="text-base sm:text-lg font-bold text-destructive">
+                R$ {formatCurrency(value)}
+              </p>
+            ) : (
+              <p className="text-base sm:text-lg font-bold text-green-600">
+                R$ {formatCurrency(value)}
+              </p>
+            )
+          ) : (
+            <p className="text-base sm:text-lg font-bold">
+              R$ {formatCurrency(value)}
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>
