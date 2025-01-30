@@ -1,4 +1,4 @@
-import { DollarSign } from "lucide-react";
+import { ArrowDown, ArrowUp, DollarSign } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -27,7 +27,13 @@ function CardControl({ title, value }: CardControlProps) {
             <CardTitle className="text-lg sm:text-xl text-gray-800 select-none">
               {title}
             </CardTitle>
-            <DollarSign className="ml-auto w-4 h-4" />
+            {title == "Entrada" ? (
+              <ArrowUp className="ml-auto w-4 h-4 text-green-600" />
+            ) : title == "Saída" ? (
+              <ArrowDown className="ml-auto w-4 h-4 text-destructive" />
+            ) : (
+              <DollarSign className="ml-auto w-4 h-4" />
+            )}
           </div>
         </CardHeader>
 
