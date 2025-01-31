@@ -20,6 +20,7 @@ import {
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { AlertDialogDelete } from "./alert-dialog-delete";
+import { ALertDialogUpdate } from "./alert-dialog-update";
 
 interface DataGridProps {
   date: string;
@@ -59,6 +60,16 @@ export function DataGrid({ date }: DataGridProps) {
       cell: ({ row }) => (
         <div className="text-center">
           <AlertDialogDelete id={row.original.id} />
+        </div>
+      ),
+    },
+    {
+      accessorKey: "link-update",
+      header: "",
+      meta: { className: "text-center w-[60px]" } as CustomColumnMeta, // Alinha esta coluna ao centro
+      cell: ({ row }) => (
+        <div className="text-center">
+          <ALertDialogUpdate id={row.original.id} date={date} />
         </div>
       ),
     },
